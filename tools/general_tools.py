@@ -183,14 +183,20 @@ def sanitize_filename(filename: str) -> str:
     Sanitize filename to be Windows-compatible by replacing invalid characters.
 
     Windows doesn't allow these characters in filenames: < > : " | ? *
-    This function replaces them with safe alternatives.
+    This function replaces them with safe alternatives only on Windows platform.
 
     Args:
         filename: The original filename that may contain invalid characters
 
     Returns:
-        A Windows-compatible filename
+        A Windows-compatible filename (on Windows) or original filename (on Linux/Mac)
     """
+    import platform
+
+    # Only sanitize on Windows platform
+    if platform.system() != 'Windows':
+        return filename
+
     # Replace Windows-invalid characters with underscores
     invalid_chars = ['<', '>', ':', '"', '|', '?', '*']
     sanitized = filename
