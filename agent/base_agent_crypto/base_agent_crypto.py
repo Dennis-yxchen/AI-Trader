@@ -83,7 +83,7 @@ class DeepSeekChatOpenAI(ChatOpenAI):
 
 from prompts.agent_prompt_crypto import STOP_SIGNAL, get_agent_system_prompt_crypto
 from tools.general_tools import (extract_conversation, extract_tool_messages,
-                                 get_config_value, write_config_value)
+                                 get_config_value, sanitize_filename, write_config_value)
 from tools.price_tools import add_no_trade_record
 
 # Load environment variables
@@ -271,7 +271,9 @@ class BaseAgentCrypto:
 
     def _setup_logging(self, today_date: str) -> str:
         """Set up log file path"""
-        log_path = os.path.join(self.base_log_path, self.signature, "log", today_date)
+        # Sanitize date to be Windows-compatible
+        safe_date = sanitize_filename(today_date)
+        log_path = os.path.join(self.base_log_path, self.signature, "log", safe_date)
         if not os.path.exists(log_path):
             os.makedirs(log_path)
         return os.path.join(log_path, "log.jsonl")

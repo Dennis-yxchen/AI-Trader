@@ -176,3 +176,26 @@ def extract_first_tool_message_content(conversation: dict):
     if isinstance(first, dict):
         return first.get("content")
     return getattr(first, "content", None)
+
+
+def sanitize_filename(filename: str) -> str:
+    """
+    Sanitize filename to be Windows-compatible by replacing invalid characters.
+
+    Windows doesn't allow these characters in filenames: < > : " | ? *
+    This function replaces them with safe alternatives.
+
+    Args:
+        filename: The original filename that may contain invalid characters
+
+    Returns:
+        A Windows-compatible filename
+    """
+    # Replace Windows-invalid characters with underscores
+    invalid_chars = ['<', '>', ':', '"', '|', '?', '*']
+    sanitized = filename
+
+    for char in invalid_chars:
+        sanitized = sanitized.replace(char, '_')
+
+    return sanitized
